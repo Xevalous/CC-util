@@ -1,6 +1,6 @@
 # cc-util
 
-CapCut desktop utility — TUI (Bubble Tea) with patch and version-lock features.
+CapCut desktop utility — TUI (Bubble Tea) with patch, version-lock, and download features.
 
 ## Build
 
@@ -15,10 +15,18 @@ No tests, no lint, no CI. There is no test command.
 ## Structure
 
 - `main.go` — entrypoint, runs Bubble Tea program
-- `ui/` — TUI views (precheck → menu → patch/lock)
+- `ui/` — TUI views (precheck → menu → patch/lock/download)
 - `patch/` — DLL patching logic (binary byte replacement in VECreator.dll)
 - `lock/` — version lock via ProductInfo.xml + Windows `attrib`
 - `util/process.go` — CapCut process management (`tasklist`/`taskkill`), app dir resolution
+
+## Flow
+
+```
+Precheck → Menu → [Patch | Lock | Download]
+```
+
+Download view includes scrollable list of legacy CapCut versions (1.0.0–5.4.0 Beta6) with 4.0.0 as recommended. Opens in browser or shows raw URL as fallback.
 
 ## Platform
 
