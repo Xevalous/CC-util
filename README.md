@@ -4,8 +4,8 @@ CapCut desktop utility — a terminal UI for patching, version-locking, and down
 
 ## Features
 
-- **Patch** — Toggle pro features by patching `VECreator.dll` (binary byte replacement)
-- **Lock** — Lock CapCut version via `ProductInfo.xml` + Windows `attrib`
+- **Patch** — Get many features by patching `VECreator.dll`
+- **Lock** — Lock CapCut version
 - **Download** — Browse and open legacy CapCut versions (1.0.0–5.4.0 Beta6) in browser
 
 ## Build
