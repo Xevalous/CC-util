@@ -4,7 +4,9 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-	"runtime"
+	"sort"
+	"strconv"
+	"strings"
 	"time"
 
 	"cc-util/util"
@@ -20,7 +22,6 @@ type checkResult struct {
 type precheckModel struct {
 	checks  []checkResult
 	failed  bool
-	ready   bool
 	appsDir string
 }
 
@@ -28,13 +29,6 @@ type tickMsg time.Time
 
 func runPrechecks() []checkResult {
 	var checks []checkResult
-
-	// OS check
-	if runtime.GOOS == "windows" {
-		checks = append(checks, checkResult{"OS: Windows", "OK"})
-	} else {
-		checks = append(checks, checkResult{"OS: " + runtime.GOOS, "FAIL"})
-	}
 
 	// CapCut installed
 	localAppData := os.Getenv("LOCALAPPDATA")
@@ -45,6 +39,24 @@ func runPrechecks() []checkResult {
 		checks = append(checks, checkResult{"CapCut installed", "FAIL"})
 	}
 
+    // Version check — supported: 1.0.0 ~ 5.4.0
+	appsDir, _ := util.ResolveAppsDir()
+	if appsDir != "" {
+		versions := util.ListVersions(appsDir)
+		sort.Strings(versions)
+		if len(versions) == 0 {
+			checks = append(checks, checkResult{"Version: none installed", "WARN"})
+		} else {
+			for _, v := range versions {
+				status := "OK"
+				if !isVersionSupported(v) {
+					status = "WARN"
+				}
+				checks = append(checks, checkResult{"Version: " + v, status})
+			}
+		}
+	}
+
 	// CapCut running
 	if util.IsCapCutRunning() {
 		checks = append(checks, checkResult{"CapCut is running", "WARN"})
@@ -53,6 +65,29 @@ func runPrechecks() []checkResult {
 	}
 
 	return checks
+}
+
+func isVersionSupported(ver string) bool {
+	parts := strings.Split(ver, ".")
+	if len(parts) < 2 {
+		return false
+	}
+	major, err := strconv.Atoi(parts[0])
+	if err != nil {
+		return false
+	}
+	minor, err := strconv.Atoi(parts[1])
+	if err != nil {
+		return false
+	}
+	// ponytail: hardcoded range 1.0 ~ 5.4, matches download list
+	if major < 1 || major > 5 {
+		return false
+	}
+	if major == 5 && minor > 4 {
+		return false
+	}
+	return true
 }
 
 func NewPrecheck() tea.Model {
@@ -97,16 +132,7 @@ func (m precheckModel) View() string {
 	s := "\n  CC UTIL\n\n  Checking requirements...\n\n"
 
 	for _, c := range m.checks {
-		var tag string
-		switch c.status {
-		case "OK":
-			tag = "[OK]"
-		case "WARN":
-			tag = "[WARN]"
-		case "FAIL":
-			tag = "[FAIL]"
-		}
-		s += fmt.Sprintf("  %s  %s\n", tag, c.name)
+		s += fmt.Sprintf("  [%s]  %s\n", c.status, c.name)
 	}
 
 	s += "\n"
