@@ -1,4 +1,4 @@
-# cc-util
+# CC-util
 
 CapCut desktop utility — a terminal UI for patching, version-locking, and downloading legacy CapCut builds on Windows.
 
