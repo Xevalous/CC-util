@@ -8,12 +8,7 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 )
 
-type versionEntry structf {
-	label string
-	url   string
-}
-
-var ccVersions = []versionEntry{
+var ccVersions = [][2]string{
 	{"4.0.0 (Recommended)", "https://lf16-capcut.faceulv.com/obj/capcutpc-packages-us/packages/CapCut_4_0_0_1680_capcutpc_0_creatortool.exe"},
 	{"5.4.0 (Beta6)", "https://lf16-capcut.faceulv.com/obj/capcutpc-packages-us/packages/CapCut_5_4_0_1991_beta6_capcutpc_beta_creatortool.exe"},
 	{"5.4.0 (Beta5)", "https://lf16-capcut.faceulv.com/obj/capcutpc-packages-us/packages/CapCut_5_4_0_1988_beta5_capcutpc_beta_creatortool.exe"},
@@ -131,11 +126,11 @@ func (m downloadModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		if m.showDetail {
 			switch msg.String() {
 			case "1":
-				go openBrowser(ccVersions[m.cursor].url)
-				m.msg = fmt.Sprintf("Opening in browser...\n\n  If it didn't open, copy this URL:\n\n  %s", ccVersions[m.cursor].url)
+				go openBrowser(ccVersions[m.cursor][1])
+				m.msg = fmt.Sprintf("Opening in browser...\n\n  If it didn't open, copy this URL:\n\n  %s", ccVersions[m.cursor][1])
 				return m, nil
 			case "2":
-				m.msg = fmt.Sprintf("URL:\n\n  %s", ccVersions[m.cursor].url)
+				m.msg = fmt.Sprintf("URL:\n\n  %s", ccVersions[m.cursor][1])
 				return m, nil
 			case "esc":
 				m.showDetail = false
@@ -158,20 +153,6 @@ func (m downloadModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 					m.start = m.cursor - listHeight + 1
 				}
 			}
-		case "pgup":
-			m.cursor -= listHeight
-			if m.cursor < 0 {
-				m.cursor = 0
-			}
-			m.start = m.cursor
-		case "pgdown":
-			m.cursor += listHeight
-			if m.cursor >= len(ccVersions) {
-				m.cursor = len(ccVersions) - 1
-			}
-			if m.cursor >= m.start+listHeight {
-				m.start = m.cursor - listHeight + 1
-			}
 		case "enter":
 			m.showDetail = true
 			m.msg = ""
@@ -189,7 +170,7 @@ func (m downloadModel) View() string {
 
 	if m.showDetail {
 		s := "\n  DOWNLOAD SUPPORTED VERSION\n\n"
-		s += fmt.Sprintf("  Version: %s\n\n", ccVersions[m.cursor].label)
+		s += fmt.Sprintf("  Version: %s\n\n", ccVersions[m.cursor][0])
 		s += "  [1] Open in browser\n"
 		s += "  [2] Show URL only\n"
 		s += "  [esc] Back\n"
@@ -207,14 +188,12 @@ func (m downloadModel) View() string {
 		if i == m.cursor {
 			cursor = ">>"
 		}
-		s += fmt.Sprintf("  %s %s\n", cursor, ccVersions[i].label)
+		s += fmt.Sprintf("  %s %s\n", cursor, ccVersions[i][0])
 	}
 
 	s += fmt.Sprintf("\n  (%d/%d)", m.cursor+1, len(ccVersions))
 	s += "\n\n  [enter] Select  [esc] Back\n\n"
-	s += "  How to downgrade:\n"
-	s += "  Goto \"C:\\Users\\Your PC Name\\AppData\\Local\\CapCut\\Apps\"\n"
-	s += "  And delete all of the folders in there.\n"
+	s += "  How to downgrade:\n  Goto \"C:\\Users\\Your PC Name\\AppData\\Local\\CapCut\\Apps\"\n  And delete all of the folders in there.\n"
 	return s
 }
 
