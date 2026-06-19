@@ -1,4 +1,4 @@
-APP = cc-util
+APP = CC-util
 BUILD_DIR = .
 
 build:
