@@ -14,7 +14,7 @@ CapCut desktop utility — a terminal UI for patching, version-locking, and down
 make build
 ```
 
-Requires Go and [`go-winres`](https://github.com/tc-hib/go-winres) for Windows resource embedding. Cross-compiles from any OS (`GOOS=windows GOARCH=amd64`).
+Requires Go. Cross-compiles to Windows from any OS (`GOOS=windows GOARCH=amd64`).
 
 ## Usage
 

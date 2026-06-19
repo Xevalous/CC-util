@@ -8,7 +8,7 @@ CapCut desktop utility — TUI (Bubble Tea) with patch, version-lock, and downlo
 make build    # cross-compile to cc-util.exe (Windows amd64)
 ```
 
-Requires `go-winres` for embedding Windows resources (`rsrc_windows_amd64.syso` is gitignored). Both `.syso` and `cc-util.exe` are in `.gitignore`.
+Requires Go. Cross-compiles to Windows from any OS (`GOOS=windows GOARCH=amd64`).
 
 No tests, no lint, no CI. There is no test command.
 
