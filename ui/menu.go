@@ -5,7 +5,6 @@ import (
 )
 
 type menuModel struct {
-	cursor  int
 	appsDir string
 }
 
@@ -40,5 +39,7 @@ func (m menuModel) View() string {
 	s += "  [2] Lock Version\n"
 	s += "  [3] Download Supported Version\n"
 	s += "  [4] Exit\n\n"
+	s += "  Created by Xevalous, Visit the repo:\n"
+	s += "  https://github.com/Xevalous/CC-util\n"
 	return s
 }
