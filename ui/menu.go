@@ -25,7 +25,9 @@ func (m menuModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			return NewPatch(m.appsDir), nil
 		case "2":
 			return NewLock(m.appsDir), nil
-		case "3", "q", "ctrl+c":
+		case "3":
+			return NewDownload(m.appsDir), nil
+		case "4", "q", "ctrl+c":
 			return m, tea.Quit
 		}
 	}
@@ -36,6 +38,7 @@ func (m menuModel) View() string {
 	s := "\n          CC UTIL\n\n"
 	s += "  [1] Patch\n"
 	s += "  [2] Lock Version\n"
-	s += "  [3] Exit\n\n"
+	s += "  [3] Download Supported Version\n"
+	s += "  [4] Exit\n\n"
 	return s
 }
